@@ -1,0 +1,221 @@
+<h3>Lista de Usuarios</h3>
+
+<button nz-button nzType="link" (click)="mostrarInput = true" class="m-b-20">
+  <i nz-icon nzType="plus"></i>Nuevo Usuario
+</button>
+
+<form
+  class="ordenar"
+  *ngIf="mostrarInput"
+  nz-form
+  [nzLayout]="'inline'"
+  [formGroup]="validateForm"
+  (ngSubmit)="submitForm()"
+>
+  <nz-form-item>
+    <nz-form-label>Nombre</nz-form-label>
+    <nz-form-control nzErrorTip="Por favor ingrese un usuario!">
+      <nz-input-group nzPrefixIcon="user">
+        <input
+          formControlName="username"
+          nz-input
+          placeholder="Nombre de usuario"
+        />
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>Correo</nz-form-label>
+    <nz-form-control nzErrorTip="Por favor ingrese un correo!">
+      <nz-input-group nzPrefixIcon="mail">
+        <input
+          formControlName="email"
+          nz-input
+          placeholder="Correo electrónico"
+        />
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>Rol</nz-form-label>
+    <nz-form-control nzErrorTip="Por favor seleccione un rol!">
+      <nz-input-group>
+        <nz-select
+          formControlName="role"
+          nzPlaceHolder="Seleccione un rol de usuario"
+          nzAllowClear
+        >
+          <nz-option
+            nzLabel="Administrador"
+            nzValue="Administrador"
+          ></nz-option>
+          <nz-option
+            nzLabel="Encargado de Almacén"
+            nzValue="Encargado de Almacén"
+          ></nz-option>
+        </nz-select>
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>Estado</nz-form-label>
+    <nz-form-control nzErrorTip="Por favor seleccione un estado!">
+      <nz-input-group>
+        <nz-select
+          formControlName="state"
+          nzPlaceHolder="Seleccione un estado de usuario"
+          nzAllowClear
+        >
+          <nz-option nzLabel="Habilitado" nzValue="true"></nz-option>
+          <nz-option nzLabel="Deshabilitado" nzValue="false"></nz-option>
+        </nz-select>
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item class="w-100">
+    <nz-form-control>
+      <button
+        nz-button
+        nzType="primary"
+        nzDanger
+        (click)="mostrarInput = false; limpiarInputs()"
+        class="btn-cancelar">
+        Cancelar
+      </button>
+      <button
+        type="button"
+        (click)="mostrarInput = false; addRow()"
+        nz-button
+        nzType="primary"
+        [disabled]="!validateForm.valid"
+      >
+        Agregar
+      </button>
+    </nz-form-control>
+  </nz-form-item>
+</form>
+
+<nz-table #dataTable nzBordered [nzData]="listOfData" class="w-100">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Nombre de usuario</th>
+      <th>Correo</th>
+      <th>Rol</th>
+      <th>Estado</th>
+      <th>Acción</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let data of dataTable.data">
+      <ng-container *ngIf="!editCache[data.id].edit; else editTemplate">
+        <td>{{ data.id }}</td>
+        <td>{{ data.username }}</td>
+        <td>{{ data.email }}</td>
+        <td>{{ data.role }}</td>
+        <!-- <td
+          [ngClass]="{
+            'text-danger': data.state === false,
+            'text-success': data.state === true
+          }"
+        >
+          {{ data.state ? 'Habilitado' : 'Deshabilitado' }}
+        </td> -->
+        
+        <td>{{ data.state }}</td>
+        
+        <td>
+            <button 
+            nz-button
+            nzType="link"
+            nzSize="small"
+            nzPrimary
+            (click)="startEdit(data.id)">Editar</button>
+          <button
+            nz-button
+            nzType="link"
+            nzSize="small"
+            nzDanger
+            (click)="deleteRow(data)"
+            nz-popconfirm
+            nzPopconfirmTitle="Seguro de eliminar?"
+            (nzOnConfirm)="deleteRow(data.id)"
+          >
+            Eliminar
+          </button>
+        </td>
+      </ng-container>
+      <ng-template #editTemplate>
+        <td>
+          <input
+            type="text"
+            nz-input
+            [(ngModel)]="editCache[data.id].data.id"
+          />
+        </td>
+        <td>
+          <input
+            type="text"
+            nz-input
+            [(ngModel)]="editCache[data.id].data.username"
+          />
+        </td>
+        <td>
+          <input
+            type="text"
+            nz-input
+            [(ngModel)]="editCache[data.id].data.email"
+          />
+        </td>
+
+        <td>
+          <nz-select
+            nzPlaceHolder="Seleccione un rol de usuario"
+            nzAllowClear
+            [(ngModel)]="editCache[data.id].data.role"
+          >
+            <nz-option
+              nzLabel="Administrador"
+              nzValue="Administrador"
+            ></nz-option>
+            <nz-option
+              nzLabel="Encargado de Almacén"
+              nzValue="Encargado de Almacén"
+            ></nz-option>
+          </nz-select>
+        </td>
+        
+        <td>
+          <nz-select
+            nzPlaceHolder="Seleccione un estado de usuario"
+            nzAllowClear
+            [(ngModel)]="editCache[data.id].data.state"
+          >
+            <nz-option nzLabel="Habilitado" nzValue="true"></nz-option>
+            <nz-option nzLabel="Deshabilitado" nzValue="false"></nz-option>
+          </nz-select>
+        </td>
+
+        <td>
+          <button 
+          nz-button
+          nzType="link"
+          nzSize="small"
+          nzPrimary
+          (click)="saveEdit(data.id)" class="save">Save</button><br>
+          <button
+            nz-button
+            nzType="link"
+            nzSize="small"
+            nzDanger
+            (click)="cancelEdit(data.id)"
+            >Cancel</button>
+        </td>
+      </ng-template>
+    </tr>
+  </tbody>
+</nz-table>
