@@ -15,10 +15,12 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 // formsmodule
 import { FormsModule } from '@angular/forms';
+import { RolComponent } from './rol/rol.component';
 
 @NgModule({
   declarations: [
-    ListarComponent
+    ListarComponent,
+    RolComponent
   ],
   imports: [
     CommonModule,

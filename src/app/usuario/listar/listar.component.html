@@ -116,16 +116,7 @@
         <td>{{ data.id }}</td>
         <td>{{ data.username }}</td>
         <td>{{ data.email }}</td>
-        <td>{{ data.role }}</td>
-        <!-- <td
-          [ngClass]="{
-            'text-danger': data.state === false,
-            'text-success': data.state === true
-          }"
-        >
-          {{ data.state ? 'Habilitado' : 'Deshabilitado' }}
-        </td> -->
-        
+        <td>{{ data.role }}</td>    
         <td>{{ data.state }}</td>
         
         <td>
@@ -151,11 +142,7 @@
       </ng-container>
       <ng-template #editTemplate>
         <td>
-          <input
-            type="text"
-            nz-input
-            [(ngModel)]="editCache[data.id].data.id"
-          />
+          {{ data.id }}
         </td>
         <td>
           <input

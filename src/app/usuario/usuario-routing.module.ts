@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ListarComponent } from './listar/listar.component';
+import { RolComponent } from './rol/rol.component';
 
 const routes: Routes = [
   {
@@ -8,6 +9,13 @@ const routes: Routes = [
         component: ListarComponent,
         data: {
             title: 'Listar'
+        }
+  },
+  {
+    path: 'rol',
+        component: RolComponent,
+        data: {
+            title: 'Rol'
         }
   }
 ];
