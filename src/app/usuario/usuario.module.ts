@@ -11,11 +11,10 @@ import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { ReactiveFormsModule } from '@angular/forms';
-// ngzorro styles button
 import { NzButtonModule } from 'ng-zorro-antd/button';
-// formsmodule
 import { FormsModule } from '@angular/forms';
 import { RolComponent } from './rol/rol.component';
+import { authInterceptopProviders } from '../shared/services/interceptor.service';
 
 @NgModule({
   declarations: [
@@ -34,6 +33,9 @@ import { RolComponent } from './rol/rol.component';
     ReactiveFormsModule,
     NzButtonModule,
     FormsModule
+  ],
+  providers: [
+    authInterceptopProviders
   ]
 })
 export class UsuarioModule { }

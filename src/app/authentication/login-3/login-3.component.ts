@@ -31,7 +31,7 @@ export class Login3Component{
 
                 localStorage.setItem('username', data.username);
                 localStorage.setItem('role', data.role);
-                
+                localStorage.setItem('token', data.token);
             },
             error => {
                 // console.log(error);

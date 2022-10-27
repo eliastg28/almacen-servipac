@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UserService } from '../../shared/services/user.service';
+import { InterceptorService } from '../../shared/services/interceptor.service';
 
 interface Rol {
   id: number;
@@ -13,7 +15,10 @@ interface Rol {
 })
 
 export class RolComponent implements OnInit {
-
+  
+  mostrarInput = false;
+  validateForm: FormGroup;
+  
   listOfData: Rol[] = [
     {
       id: 1,
@@ -32,12 +37,12 @@ export class RolComponent implements OnInit {
       descripcion: [null, [Validators.required]],
       remember: [true]
     });
-    
     this.updateEditCache();
   }
 
-  mostrarInput = false;
-  validateForm: FormGroup;
+
+  token = localStorage.getItem('token');
+
 
   editCache: { [key: string]: { edit: boolean; data: Rol } } = {};
 

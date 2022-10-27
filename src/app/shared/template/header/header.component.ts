@@ -21,6 +21,7 @@ export class HeaderComponent{
     logout() {
         localStorage.removeItem('username');
         localStorage.removeItem('role');
+        localStorage.removeItem('token');
         this.router.navigate(['/authentication/login-3']);
     }
 
