@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AuthenticationService } from '../../shared/services/authentication.service';
 
 
 interface ItemData {
@@ -18,7 +19,7 @@ interface ItemData {
 
 export class ListarComponent implements OnInit {
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder, private data: AuthenticationService) {}
 
   ngOnInit(): void {
     this.validateForm = this.fb.group({
@@ -26,9 +27,8 @@ export class ListarComponent implements OnInit {
       email: [null, [Validators.email, Validators.required]],
       role: [null, [Validators.required]],
       state: [null, [Validators.required]],
-      remember: [true]
+      remember: [true]      
     });
-    
     this.updateEditCache();
 
   }
@@ -37,6 +37,9 @@ export class ListarComponent implements OnInit {
   validateForm: FormGroup;
   
   editCache: { [key: string]: { edit: boolean; data: ItemData } } = {};
+
+
+
 
   listOfData: ItemData[] = [
     {

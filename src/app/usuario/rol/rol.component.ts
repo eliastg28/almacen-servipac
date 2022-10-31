@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { UserService } from '../../shared/services/user.service';
-import { InterceptorService } from '../../shared/services/interceptor.service';
+import { AuthenticationService } from '../../shared/services/authentication.service';
 
 interface Rol {
   id: number;
-  descripcion: string;
+  name: string;
+  description: string;
 }
 
 @Component({
@@ -16,35 +16,41 @@ interface Rol {
 
 export class RolComponent implements OnInit {
   
+  constructor(private fb: FormBuilder, private data: AuthenticationService) { }
+  
+  ngOnInit(): void {
+    this.validateForm = this.fb.group({
+      name: [null, [Validators.required]],
+      description: [null, [Validators.required]],
+      remember: [true]
+    });
+    this.getRoles();
+  }
+  
   mostrarInput = false;
   validateForm: FormGroup;
   
-  listOfData: Rol[] = [
-    {
-      id: 1,
-      descripcion: 'Administrador'
-    },
-    {
-      id: 2,
-      descripcion: 'Encargado de Almacén',
-    }
-  ];
-
-  constructor(private fb: FormBuilder) { }
-
-  ngOnInit(): void {
-    this.validateForm = this.fb.group({
-      descripcion: [null, [Validators.required]],
-      remember: [true]
-    });
-    this.updateEditCache();
+  getRoles(): void {
+    this.data.getRol().subscribe(
+      (data) => {
+        let aux = Object.values(data);
+        this.listOfData = aux[0];
+        this.updateEditCache();
+      },
+      (error) => {
+        console.log(error);
+      }
+      );
   }
+  
+  listOfData: Rol[] = [];
+
 
 
   token = localStorage.getItem('token');
 
 
-  editCache: { [key: string]: { edit: boolean; data: Rol } } = {};
+  editCache: { [key: number]: { edit: boolean; data: Rol } } = {};
 
   submitForm(): void {
     for (const i in this.validateForm.controls) {
@@ -61,12 +67,13 @@ export class RolComponent implements OnInit {
     this.listOfData = [
       ...this.listOfData,
       {
-        id: this.listOfData.length + 1,
-        descripcion: this.validateForm.value.descripcion
+        id: this.listOfData.length + 4,
+        name: this.validateForm.value.name,
+        description: this.validateForm.value.description
       }
     ];
-    this.limpiarInputs();
     this.updateEditCache();
+    this.limpiarInputs();
   }
 
   startEdit(id: number): void {
@@ -75,8 +82,10 @@ export class RolComponent implements OnInit {
 
   cancelEdit(id: number): void {
     this.editCache[id].edit = false;
+    this.editCache[id].data.name = this.listOfData.find(item => item.id === id).name;
+    this.editCache[id].data.description = this.listOfData.find(item => item.id === id).description;
   }
-
+  
   saveEdit(id: number): void {
     const index = this.listOfData.findIndex(item => item.id === id);
     Object.assign(this.listOfData[index], this.editCache[id].data);

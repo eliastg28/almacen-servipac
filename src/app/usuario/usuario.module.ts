@@ -14,7 +14,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { FormsModule } from '@angular/forms';
 import { RolComponent } from './rol/rol.component';
-import { authInterceptopProviders } from '../shared/services/interceptor.service';
+// import { authInterceptopProviders } from '../shared/services/interceptor.service';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -33,9 +34,7 @@ import { authInterceptopProviders } from '../shared/services/interceptor.service
     ReactiveFormsModule,
     NzButtonModule,
     FormsModule
-  ],
-  providers: [
-    authInterceptopProviders
   ]
+  
 })
 export class UsuarioModule { }

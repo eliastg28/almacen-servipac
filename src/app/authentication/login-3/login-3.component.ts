@@ -26,7 +26,7 @@ export class Login3Component{
 
         this.authService.login(usuario, contra).subscribe(
             data => {
-                console.log(data);
+                // console.log(data);
                 this.router.navigate(['/dashboard']);
 
                 localStorage.setItem('username', data.username);

@@ -13,13 +13,26 @@
   (ngSubmit)="submitForm()"
 >
   <nz-form-item>
-    <nz-form-label>Rol de Usuario</nz-form-label>
-    <nz-form-control nzErrorTip="Por favor ingrese un rol!">
+    <nz-form-label>Nombre</nz-form-label>
+    <nz-form-control nzErrorTip="Por favor ingrese un nombre de Rol">
       <nz-input-group nzPrefixIcon="solution">
         <input
-          formControlName="descripcion"
+          formControlName="name"
           nz-input
           placeholder="Nombre de rol"
+        />
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+  
+  <nz-form-item>
+    <nz-form-label>Descripción</nz-form-label>
+    <nz-form-control nzErrorTip="Por favor ingrese una descripción de rol!">
+      <nz-input-group nzPrefixIcon="solution">
+        <input
+          formControlName="description"
+          nz-input
+          placeholder="Descripción de rol"
         />
       </nz-input-group>
     </nz-form-control>
@@ -37,11 +50,11 @@
       </button>
       <button
         type="button"
-        (click)="mostrarInput = false; addRow()"
         nz-button
         nzType="primary"
+        (click)="mostrarInput = false; addRow()"
         [disabled]="!validateForm.valid"
-      >
+        >
         Agregar
       </button>
     </nz-form-control>
@@ -53,14 +66,18 @@
     <tr>
       <th>ID</th>
       <th>Rol de usuario</th>
+      <th>Descripción</th>
       <th>Acción</th>
     </tr>
   </thead>
   <tbody>
     <tr *ngFor="let data of dataTable.data">
+      <!-- editcache view -->
       <ng-container *ngIf="!editCache[data.id].edit; else editTemplate">
+      <!-- <ng-container> -->
         <td>{{ data.id }}</td>
-        <td>{{ data.descripcion }}</td>
+        <td>{{ data.name }}</td>
+        <td>{{ data.description }}</td>
         
         <td>
             <button 
@@ -92,7 +109,14 @@
           <input
             type="text"
             nz-input
-            [(ngModel)]="editCache[data.id].data.descripcion"
+            [(ngModel)]="editCache[data.id].data.name"
+          />
+        </td>
+        <td>
+          <input
+            type="text"
+            nz-input
+            [(ngModel)]="editCache[data.id].data.description"
           />
         </td>
 
