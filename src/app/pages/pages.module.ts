@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { UsuarioRoutingModule } from './usuario-routing.module';
+import { UsuarioRoutingModule } from './pages-routing.module';
 import { ListarComponent } from './listar/listar.component';
 
 import { NzTableModule } from 'ng-zorro-antd/table';

@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHandler, HttpRequest } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { User } from '../interfaces/user.type';
-// import { InterceptorService } from './interceptor.service';
+import { Router } from '@angular/router';
 
 const USER_AUTH_API_URL = 'http://almacen-servipac.herokuapp.com';
 
@@ -13,7 +13,7 @@ export class AuthenticationService {
     private currentUserSubject: BehaviorSubject<User>;
     public currentUser: Observable<User>;
 
-    constructor(private http: HttpClient/* , private interceptor: InterceptorService */) {
+    constructor(private http: HttpClient, private router: Router) {
         this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUser')));
         this.currentUser = this.currentUserSubject.asObservable();
     }
@@ -27,21 +27,19 @@ export class AuthenticationService {
         .pipe(map(user => {
             if (user && user.token) {
                 localStorage.setItem('currentUser', JSON.stringify(user));
+                localStorage.setItem('username', user.username);
+                localStorage.setItem('role', user.role);
                 this.currentUserSubject.next(user);
             }
             return user;
         }));
     }
 
-    
-    getRol() {
-        return this.http.get(`${USER_AUTH_API_URL}/roles`, { headers: { Authorization: localStorage.getItem('token') } });
-    }
-
-    
-
     logout() {
         localStorage.removeItem('currentUser');
+        localStorage.removeItem('username');
+        localStorage.removeItem('role');
         this.currentUserSubject.next(null);
+        this.router.navigate(['/authentication/login-3']).then(() => true);
     }
 }

@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup,  Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthenticationService } from '../../shared/services/authentication.service';
 
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+
 
 @Component({
     templateUrl: './login-3.component.html'
@@ -14,69 +16,44 @@ export class Login3Component{
 
     usuario: string;
     contra: string;
-    
+    btnLogin: boolean = false;
 
     submitForm(): void {
         for (const i in this.loginForm.controls) {
             this.loginForm.controls[ i ].markAsDirty();
             this.loginForm.controls[ i ].updateValueAndValidity();
         }
-        const usuario = this.loginForm.controls.userName.value;
-        const contra = this.loginForm.controls.password.value;
+        
+        this.btnLogin = true;
+        this.loginForm.disable();
 
-        this.authService.login(usuario, contra).subscribe(
+        this.authService.login(this.loginForm.controls.userName.value, this.loginForm.controls.password.value).subscribe(
             data => {
-                // console.log(data);
-                this.router.navigate(['/dashboard']);
+                console.log(data);
 
-                localStorage.setItem('username', data.username);
-                localStorage.setItem('role', data.role);
-                localStorage.setItem('token', data.token);
+                this.router.navigate(['/dashboard/home']);
+                // console.log(localStorage.getItem('currentUser'));
             },
             error => {
-                // console.log(error);
-                this.usuario = '';
-                this.contra = '';
-                this.router.navigate(['/authentication/login-3']);
-                alert('usuario o contraseña incorrectos');
+                console.log(error);
+                this.loginForm.reset();
+                this.loginForm.enable();
+                this.btnLogin = false;
+                this.createBasicNotification();
             }
         );
 
-       
-        // use authService subscribe to login
-        // this.authService.login(this.usuario, this.contra).subscribe(
-        //     (data) => {
-        //         console.log(data);
-        //         // this.router.navigate(['/dashboard']);
-        //     },
-        //     (error) => {
-        //         console.log(error);
-        //     }
-        // );
-
-        // console.log(this.loginForm.controls.userName.value);
-        // console.log(this.loginForm.controls.password.value);
-
-
-
-        // console.log(this.loginForm.controls.userName.value);
-        // console.log(this.loginForm.controls.password.value);
-        // let user = this.loginForm.controls.userName.value;
-        // let password = this.loginForm.controls.password.value;
-        // if (this.usuario === "elias" && this.contra === "elias") {
-        //     this.login = true;
-        //     this.router.navigate(['/dashboard']);
-        // }
-        // else if (this.usuario.length <= 0 || this.contra.length<=0) {
-        //     // alert("Todos los campos son obligatorios");
-        // }
-        // else{
-        //     this.login = false;
-        //     alert("Usuario o contraseña incorrectos");
-        // }
     }
 
-    constructor(private fb: FormBuilder, public router: Router, private authService: AuthenticationService) {
+    createBasicNotification(): void {
+        this.notification.error(
+            'Error',
+            'Usuario o contraseña incorrectos',
+            {nzDuration: 4000}
+        );
+      }
+
+    constructor(private fb: FormBuilder, public router: Router, private authService: AuthenticationService, private notification: NzNotificationService) {
     }
 
     ngOnInit(): void {

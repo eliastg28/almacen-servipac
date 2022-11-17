@@ -18,6 +18,8 @@ import { FullLayoutComponent } from './layouts/full-layout/full-layout.component
 import { NgChartjsModule } from 'ng-chartjs';
 import { ThemeConstantService } from './shared/services/theme-constant.service';
 import { AuthenticationService } from './shared/services/authentication.service';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+
 
 registerLocaleData(en);
 
@@ -46,7 +48,8 @@ registerLocaleData(en);
             useClass: PathLocationStrategy
         },
         ThemeConstantService,
-        AuthenticationService
+        AuthenticationService,
+        NzNotificationService
     ],
     bootstrap: [AppComponent]
 })
