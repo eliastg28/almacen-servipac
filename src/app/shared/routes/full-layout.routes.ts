@@ -6,5 +6,9 @@ export const FullLayout_ROUTES: Routes = [
         path: 'authentication',
         canActivate: [CheckLoginGuard],
         loadChildren: () => import('../../authentication/authentication.module').then(m => m.AuthenticationModule)
-    },  
+    }, 
+    {
+        path: '**',
+        redirectTo: '/authentication/error-1',
+    }
 ];

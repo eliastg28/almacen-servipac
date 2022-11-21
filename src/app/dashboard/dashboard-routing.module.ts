@@ -10,7 +10,7 @@ const routes: Routes = [
             title: 'Dashboard ',
             headerDisplay: "none"
         }
-    }
+    }    
 ];
 
 @NgModule({
