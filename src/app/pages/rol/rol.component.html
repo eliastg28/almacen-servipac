@@ -20,7 +20,8 @@
           formControlName="name"
           nz-input
           placeholder="Nombre de rol"
-        />
+          oninput="this.value = this.value.toUpperCase()"
+          />
       </nz-input-group>
     </nz-form-control>
   </nz-form-item>
@@ -30,7 +31,7 @@
     <nz-form-control nzErrorTip="Por favor ingrese una descripción de rol!">
       <nz-input-group nzPrefixIcon="solution">
         <input
-          formControlName="description"
+          formControlName="name"
           nz-input
           placeholder="Descripción de rol"
         />
@@ -44,7 +45,7 @@
         nz-button
         nzType="primary"
         nzDanger
-        (click)="mostrarInput = false; limpiarInputs()"
+        (click)="mostrarInput = false; limpiarInput()"
         class="btn-cancelar">
         Cancelar
       </button>
@@ -73,11 +74,12 @@
   <tbody>
     <tr *ngFor="let data of dataTable.data; let i = index">
       <!-- editcache view -->
-      <ng-container *ngIf="!editCache[data.row].edit; else editTemplate">
+      <ng-container *ngIf="!editCache[data.id].edit; else editTemplate">
       <!-- <ng-container> -->
-        <td>{{ data.row + 1 }}</td>
-        <td>{{ data.description }}</td>
-        <!-- <td>{{ data.description }}</td> -->
+        <td>{{ i + 1 }}</td>
+        <td>{{ data.name }}</td>
+        
+        <!-- <td>{{ data.name }}</td> -->
         
         <td>
             <button 
@@ -85,7 +87,7 @@
             nzType="link"
             nzSize="small"
             nzPrimary
-            (click)="startEdit(data.row)">Editar
+            (click)="startEdit(data.id)">Editar
           </button>
           <button
             nz-button
@@ -110,14 +112,15 @@
           <input
             type="text"
             nz-input
-            [(ngModel)]="editCache[data.row].data.description"
+            [(ngModel)]="editCache[data.id].data.name"
+            oninput="this.value = this.value.toUpperCase()"
           />
         </td>
         <!-- <td>
           <input
             type="text"
             nz-input
-            [(ngModel)]="editCache[data.id].data.description"
+            [(ngModel)]="editCache[data.id].data.name"
           />
         </td> -->
 
@@ -127,13 +130,13 @@
           nzType="link"
           nzSize="small"
           nzPrimary
-          (click)="saveEdit(data.row)" class="save">Guardar</button><br>
+          (click)="saveEdit(data.id)" class="save">Guardar</button><br>
           <button
             nz-button
             nzType="link"
             nzSize="small"
             nzDanger
-            (click)="cancelEdit(data.row)"
+            (click)="cancelEdit(data.id)"
             >Cancelar</button>
         </td>
       </ng-template>

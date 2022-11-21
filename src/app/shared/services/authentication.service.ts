@@ -6,7 +6,8 @@ import { map } from 'rxjs/operators';
 import { User } from '../interfaces/user.type';
 import { Router } from '@angular/router';
 
-const USER_AUTH_API_URL = 'http://almacen-servipac.herokuapp.com';
+const USER_AUTH_API_URL = 'https://almacen-servipac.herokuapp.com';
+
 
 @Injectable()
 export class AuthenticationService {
@@ -27,7 +28,7 @@ export class AuthenticationService {
         .pipe(map(user => {
             if (user && user.token) {
                 localStorage.setItem('currentUser', JSON.stringify(user));
-                localStorage.setItem('username', user.username);
+                localStorage.setItem('username', user.name);
                 localStorage.setItem('role', user.role);
                 this.currentUserSubject.next(user);
             }
