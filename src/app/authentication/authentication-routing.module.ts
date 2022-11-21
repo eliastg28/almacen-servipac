@@ -18,6 +18,10 @@ const routes: Routes = [
         data: {
             title: 'Error 1'
         }
+    },
+    {
+        path: '**',
+        redirectTo: '/authentication/error-1',
     }
 ];
 

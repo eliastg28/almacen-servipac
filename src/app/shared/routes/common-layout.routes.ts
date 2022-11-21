@@ -21,12 +21,7 @@ export const CommonLayout_ROUTES: Routes = [
             {
                 path: '',
                 loadChildren: () => import('../../pages/pages.module').then(m => m.UsuarioModule),
-            },
-            {
-                // not matched
-                path: '**',
-                redirectTo: '/authentication/error-1',
             }
-        ]
+        ],
     }
 ];

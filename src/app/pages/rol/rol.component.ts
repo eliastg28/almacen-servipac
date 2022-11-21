@@ -3,53 +3,112 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { RoleService } from '../../shared/services/role.service';
 import { AuthenticationService } from '../../shared/services/authentication.service';
 import { Router } from '@angular/router';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 interface Rol {
   id: number;
-  row: number;
-  description: string;
+  name: string;
+  state: boolean;
 }
 
 @Component({
   selector: 'app-rol',
   templateUrl: './rol.component.html',
-  styleUrls: ['./rol.component.css']
+  styleUrls: ['./rol.component.css'],
 })
-
 export class RolComponent implements OnInit {
-  
-  constructor(private fb: FormBuilder, private data: RoleService, private authenticationService: AuthenticationService, private router: Router) { }
+  constructor(
+    private fb: FormBuilder,
+    private data: RoleService,
+    private notification: NzNotificationService
+  ) {}
 
   ngOnInit(): void {
     this.validateForm = this.fb.group({
       name: [null, [Validators.required]],
-      remember: [true]
+      remember: [true],
     });
-    
+
     this.getRoles();
   }
 
+  errorNotification(): void {
+    this.notification.error('Error', 'El rol está en uso', {
+      nzDuration: 4000,
+    });
+  }
+  
+  createErrorNotification(): void {
+    this.notification.error('Error', 'El rol ya existe', {
+      nzDuration: 4000,
+    });
+  }
+  
+  successNotification(): void {
+    this.notification.success('Eliminación', 'Rol eliminado', {
+      nzDuration: 4000,
+    });
+  }
+  
+  createNotification(): void {
+    this.notification.success('Creación', 'Nuevo rol creado', {
+      nzDuration: 4000,
+    });
+  }
+
+  // declarar listOfData como arreglo de objetos
+  // listOfData: any[] = [];
+
   mostrarInput = false;
   validateForm: FormGroup;
-  
+
+  // listOfData tipo objeto
+  listOfData: Rol[] = [];
+
+  // getRoles(){
+  //   this.data.getRol().subscribe(
+  //     (data) => {
+  //       console.log(typeof data);
+  //       // this.listOfData = data;
+  //       this.updateEditCache();
+  //     },
+  //     (error) => {
+  //       console.log(error);
+  //     }
+  //   );
+  // }
+
   getRoles(): void {
     this.data.getRol().subscribe(
       (data) => {
-        let aux = Object.values(data);
-        this.listOfData = aux[0];
-        this.listOfData.map((item, index) => {
-          item.row = index;
-        });
+        // console.log(typeof data);
+        // console.log(data);
+
+        this.listOfData = data
+          .toString()
+          .split(',')
+          .map((item, index) => {
+            return {
+              id: data[index].id,
+              name: data[index].name,
+              state: true,
+              row: index + 1
+            };
+          });
+        // ordenar por id
+        this.listOfData.sort((a, b) => a.id - b.id);
         this.updateEditCache();
       },
       (error) => {
         console.log(error);
       }
-      );
-
+    );
   }
-  
-  listOfData: Rol[] = [];
+
+  // this.listOfData = data[0];
+  // this.listOfData.map((item, index) => {
+  //   item.row = index;
+  // });
 
   editCache: { [key: number]: { edit: boolean; data: Rol } } = {};
 
@@ -65,11 +124,12 @@ export class RolComponent implements OnInit {
       (data) => {
         // console.log(data);
         this.getRoles();
+        this.successNotification();
       },
       (error) => {
-        console.log(error);
+        this.errorNotification();
       }
-      );
+    );
     // this.listOfData = this.listOfData.filter(d => d.id !== id);
   }
 
@@ -80,51 +140,53 @@ export class RolComponent implements OnInit {
       (data) => {
         // console.log(data);
         this.getRoles();
+        this.createNotification();
       },
       (error) => {
-        console.log(error);
+        this.createErrorNotification();
       }
-      );
+    );
 
-      // 
-      // this.mostrarInput = false;
-    
+    //
+    // this.mostrarInput = false;
 
-
-
-      // agregar nuevo rol
-      // ...this.listOfData,
-      // {
-      //   id: this.listOfData.length + 1,
-      //   row: this.listOfData.length + 1,
-      //   description: this.validateForm.value.name
-      // }
+    // agregar nuevo rol
+    // ...this.listOfData,
+    // {
+    //   id: this.listOfData.length + 1,
+    //   row: this.listOfData.length + 1,
+    //   name: this.validateForm.value.name
+    // }
     // this.updateEditCache();
     this.validateForm.reset();
     this.getRoles();
   }
 
-  startEdit(row: number): void {
-    this.editCache[row].edit = true;
+  startEdit(id: number): void {
+    this.editCache[id].edit = true;
   }
 
   cancelEdit(id: number): void {
     this.editCache[id].edit = false;
     // this.editCache[id].data.name = this.listOfData.find(item => item.id === id).name;
-    this.editCache[id].data.description = this.listOfData.find(item => item.row === id).description;
+    this.editCache[id].data.name = this.listOfData.find(
+      (item) => item.id === id
+      // limpia el input
+      // this.validateForm.reset()
+    ).name;
+
   }
-  
-  saveEdit(row: number): void {
-    this.data.editRol(row, this.editCache[row].data.description).subscribe(
+
+  saveEdit(id: number): void {
+    this.data.editRol(id, this.editCache[id].data.name).subscribe(
       (data) => {
-        // console.log(data);
         this.getRoles();
       },
       (error) => {
-        console.log(error);
+        this.createErrorNotification();
+        this.cancelEdit(id);
       }
     );
-
 
     // const index = this.listOfData.findIndex(item => item.row === row);
     // Object.assign(this.listOfData[index], this.editCache[row].data);
@@ -133,13 +195,20 @@ export class RolComponent implements OnInit {
     // console.log(row);
   }
 
+  limpiarInput(): void {
+    this.validateForm.reset();
+  }
+
+  // toUpper(event: any): void {
+  //   this.validateForm.controls.name.setValue(event.target.value.toUpperCase());
+  // }
+
   updateEditCache(): void {
-    this.listOfData.forEach(item => {
-      this.editCache[item.row] = {
+    this.listOfData.forEach((item) => {
+      this.editCache[item.id] = {
         edit: false,
-        data: { ...item }
+        data: { ...item },
       };
     });
   }
-
 }
