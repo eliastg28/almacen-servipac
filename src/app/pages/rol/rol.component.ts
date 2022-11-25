@@ -43,6 +43,12 @@ export class RolComponent implements OnInit {
       nzDuration: 4000,
     });
   }
+
+  editErrorNotification(): void {
+    this.notification.error('Error', 'El rol no se puede editar', {
+      nzDuration: 4000,
+    });
+  }
   
   successNotification(): void {
     this.notification.success('Eliminación', 'Rol eliminado', {
@@ -91,8 +97,7 @@ export class RolComponent implements OnInit {
             return {
               id: data[index].id,
               name: data[index].name,
-              state: true,
-              row: index + 1
+              state: true
             };
           });
         // ordenar por id
@@ -183,7 +188,7 @@ export class RolComponent implements OnInit {
         this.getRoles();
       },
       (error) => {
-        this.createErrorNotification();
+        this.editErrorNotification();
         this.cancelEdit(id);
       }
     );

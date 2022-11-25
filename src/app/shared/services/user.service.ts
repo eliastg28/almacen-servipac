@@ -8,41 +8,47 @@ interface Rol {
   descripcion: string;
 }
 
-const USER_AUTH_API_URL = 'http://almacen-servipac.herokuapp.com/roles';
+const USER_AUTH_API_URL = 'https://almacen-servipac.herokuapp.com';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
+  constructor(private http: HttpClient) {}
 
-  // private currentUserSubject: BehaviorSubject<Rol>;
-  // public currentUser: Observable<Rol>;
-
-  constructor(private http: HttpClient) {
-    // this.currentUserSubject = new BehaviorSubject<Rol>(
-    //   JSON.parse(localStorage.getItem('currentUser'))
-    // );
-    // this.currentUser = this.currentUserSubject.asObservable();
+  getUser() {
+    return this.http.get(
+      `${USER_AUTH_API_URL}/users` /* , { headers: { Authorization: localStorage.getItem('token') } } */
+    );
   }
 
-  // public get currentUserValue(): Rol {
-  //   return this.currentUserSubject.value;
-  // }
+  postUser(username: string, email: string, password: string, role: number) {
+    return this.http.post(
+      `${USER_AUTH_API_URL}/users/create`,
+      {
+        username,
+        email,
+        password,
+        role,
+      }
+       /* , { headers: { Authorization: localStorage.getItem('token') } } */
+    );
+  }
 
-  // listRol(token:string){
-  //   return this.http.post<any>(USER_AUTH_API_URL, { token })
-  //   .pipe(map(rol => {
-  //     if (rol && rol.token) {
-  //       localStorage.setItem('currentUser', JSON.stringify(rol));
-  //       this.currentUserSubject.next(rol);
-  //     }
-  //     return rol;
-  //   }));
-  // }
+  deleteUser(id: number) {
+    return this.http.delete(
+      `${USER_AUTH_API_URL}/users/delete/${id}` /* , { headers: { Authorization: localStorage.getItem('token') } } */
+    );
+  }
 
-  // post con header token
-  
-  obtenerRespuesta(USER_AUTH_API_URL: string, token: string) {
-    return this.http.post<any>(USER_AUTH_API_URL, { token });
+  editUser(id: number, username: string, email: string, role: number) {
+    return this.http.put(
+      `${USER_AUTH_API_URL}/users/update/${id}`,
+      {
+        username,
+        email,
+        role,
+      } /* , { headers: { Authorization: localStorage.getItem('token') } } */
+    );
   }
 }
