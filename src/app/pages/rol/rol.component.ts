@@ -8,7 +8,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 interface Rol {
   id: number;
   name: string;
-  state: boolean;
+  description: string;
 }
 
 @Component({
@@ -26,6 +26,7 @@ export class RolComponent implements OnInit {
   ngOnInit(): void {
     this.validateForm = this.fb.group({
       name: [null, [Validators.required]],
+      description: [null, [Validators.required]],
       remember: [true],
     });
 
@@ -62,60 +63,36 @@ export class RolComponent implements OnInit {
     });
   }
 
-  // declarar listOfData como arreglo de objetos
-  // listOfData: any[] = [];
-
+  editNotification(): void {
+    this.notification.success('Edición', 'Rol editado', {
+      nzDuration: 4000,
+    });
+  }
+  
   mostrarInput = false;
   validateForm: FormGroup;
-
-  // listOfData tipo objeto
   listOfData: Rol[] = [];
-
-  // getRoles(){
-  //   this.data.getRol().subscribe(
-  //     (data) => {
-  //       console.log(typeof data);
-  //       // this.listOfData = data;
-  //       this.updateEditCache();
-  //     },
-  //     (error) => {
-  //       console.log(error);
-  //     }
-  //   );
-  // }
-
-  getRoles(): void {
+  editCache: { [key: number]: { edit: boolean; data: Rol } } = {};
+  
+  getRoles(): void {    
     this.data.getRol().subscribe(
       (data) => {
-        // console.log(typeof data);
-        // console.log(data);
-
-        this.listOfData = data
-          .toString()
-          .split(',')
-          .map((item, index) => {
-            return {
-              id: data[index].id,
-              name: data[index].name,
-              state: true
-            };
-          });
-        // ordenar por id
-        this.listOfData.sort((a, b) => a.id - b.id);
+        
+        for (const key in data) {
+          if (Object.prototype.hasOwnProperty.call(data, key)) {
+            const element = data[key];
+            if (typeof element === 'object') {
+            this.listOfData = element;
+            }
+          }
+        }
         this.updateEditCache();
       },
       (error) => {
-        console.log(error);
+        // console.log(error);
       }
-    );
+    )
   }
-
-  // this.listOfData = data[0];
-  // this.listOfData.map((item, index) => {
-  //   item.row = index;
-  // });
-
-  editCache: { [key: number]: { edit: boolean; data: Rol } } = {};
 
   submitForm(): void {
     for (const i in this.validateForm.controls) {
@@ -127,7 +104,6 @@ export class RolComponent implements OnInit {
   deleteRow(id: number): void {
     this.data.deleteRol(id).subscribe(
       (data) => {
-        // console.log(data);
         this.getRoles();
         this.successNotification();
       },
@@ -135,79 +111,55 @@ export class RolComponent implements OnInit {
         this.errorNotification();
       }
     );
-    // this.listOfData = this.listOfData.filter(d => d.id !== id);
   }
 
   addRow(): void {
     this.listOfData = [];
-    // insert data with service postRol(name)
-    this.data.postRol(this.validateForm.value.name).subscribe(
+    this.data.postRol(this.validateForm.value.name, this.validateForm.value.description).subscribe(
       (data) => {
-        // console.log(data);
         this.getRoles();
         this.createNotification();
       },
       (error) => {
+        console.log(error);
         this.createErrorNotification();
       }
     );
-
-    //
-    // this.mostrarInput = false;
-
-    // agregar nuevo rol
-    // ...this.listOfData,
-    // {
-    //   id: this.listOfData.length + 1,
-    //   row: this.listOfData.length + 1,
-    //   name: this.validateForm.value.name
-    // }
-    // this.updateEditCache();
     this.validateForm.reset();
     this.getRoles();
   }
-
+  
   startEdit(id: number): void {
     this.editCache[id].edit = true;
   }
 
   cancelEdit(id: number): void {
     this.editCache[id].edit = false;
-    // this.editCache[id].data.name = this.listOfData.find(item => item.id === id).name;
     this.editCache[id].data.name = this.listOfData.find(
       (item) => item.id === id
-      // limpia el input
-      // this.validateForm.reset()
     ).name;
-
+    this.editCache[id].data.description = this.listOfData.find(
+      (item) => item.id === id
+    ).description;
   }
 
   saveEdit(id: number): void {
-    this.data.editRol(id, this.editCache[id].data.name).subscribe(
+    this.data.editRol(id, this.editCache[id].data.name, this.editCache[id].data.description).subscribe(
       (data) => {
         this.getRoles();
+        this.editNotification();
       },
       (error) => {
         this.editErrorNotification();
         this.cancelEdit(id);
       }
     );
-
-    // const index = this.listOfData.findIndex(item => item.row === row);
-    // Object.assign(this.listOfData[index], this.editCache[row].data);
-    // this.editCache[row].edit = false;
-    // this.updateEditCache();
-    // console.log(row);
   }
 
   limpiarInput(): void {
     this.validateForm.reset();
   }
-
-  // toUpper(event: any): void {
-  //   this.validateForm.controls.name.setValue(event.target.value.toUpperCase());
-  // }
-
+  
   updateEditCache(): void {
     this.listOfData.forEach((item) => {
       this.editCache[item.id] = {

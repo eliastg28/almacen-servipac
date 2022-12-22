@@ -15,7 +15,7 @@
   <nz-form-item>
     <nz-form-label>Nombre</nz-form-label>
     <nz-form-control nzErrorTip="Por favor ingrese un nombre de Rol">
-      <nz-input-group nzPrefixIcon="solution">
+      <nz-input-group>
         <input
           formControlName="name"
           nz-input
@@ -26,18 +26,19 @@
     </nz-form-control>
   </nz-form-item>
   
-  <!-- <nz-form-item>
+  <nz-form-item>
     <nz-form-label>Descripción</nz-form-label>
     <nz-form-control nzErrorTip="Por favor ingrese una descripción de rol!">
       <nz-input-group nzPrefixIcon="solution">
         <input
-          formControlName="name"
+          formControlName="description"
           nz-input
           placeholder="Descripción de rol"
+          oninput="this.value = this.value.toUpperCase()"
         />
       </nz-input-group>
     </nz-form-control>
-  </nz-form-item> -->
+  </nz-form-item>
 
   <nz-form-item class="w-50">
     <nz-form-control>
@@ -67,20 +68,16 @@
     <tr>
       <th>ID</th>
       <th>Nombre</th>
-      <!-- <th>Descripción</th> -->
+      <th>Descripción</th>
       <th>Acción</th>
     </tr>
   </thead>
   <tbody>
     <tr *ngFor="let data of dataTable.data; let i = index">
-      <!-- editcache view -->
       <ng-container *ngIf="!editCache[data.id].edit; else editTemplate">
-      <!-- <ng-container> -->
         <td>{{ i + 1 }}</td>
         <td>{{ data.name }}</td>
-        
-        <!-- <td>{{ data.name }}</td> -->
-        
+        <td>{{ data.description }}</td>
         <td>
             <button 
             nz-button
@@ -116,14 +113,14 @@
             oninput="this.value = this.value.toUpperCase()"
           />
         </td>
-        <!-- <td>
+        <td>
           <input
             type="text"
             nz-input
-            [(ngModel)]="editCache[data.id].data.name"
+            [(ngModel)]="editCache[data.id].data.description"
+            oninput="this.value = this.value.toUpperCase()"
           />
-        </td> -->
-
+        </td>
         <td>
           <button 
           nz-button
