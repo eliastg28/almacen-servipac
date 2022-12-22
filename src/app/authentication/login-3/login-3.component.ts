@@ -11,8 +11,8 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 export class Login3Component {
   loginForm: FormGroup;
 
-  usuario: string;
-  contra: string;
+  // usuario: string;
+  // contra: string;
   btnLogin: boolean = false;
 
   submitForm(): void {
@@ -26,11 +26,12 @@ export class Login3Component {
 
     this.authService
       .login(
-        this.loginForm.controls.userName.value,
+        this.loginForm.controls.username.value,
         this.loginForm.controls.password.value
       )
       .subscribe(
         (data) => {   
+          // console.log(data);
           this.router.navigate(['/dashboard/home']);
         },
         (error) => {
@@ -58,7 +59,7 @@ export class Login3Component {
 
   ngOnInit(): void {
     this.loginForm = this.fb.group({
-      userName: [null, [Validators.required]],
+      username: [null, [Validators.required]],
       password: [null, [Validators.required]],
     });
   }
