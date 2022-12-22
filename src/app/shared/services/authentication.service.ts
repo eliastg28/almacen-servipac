@@ -6,7 +6,7 @@ import { map } from 'rxjs/operators';
 import { User } from '../interfaces/user.type';
 import { Router } from '@angular/router';
 
-const USER_AUTH_API_URL = 'http://localhost:5000/api/v1';
+const USER_AUTH_API_URL = 'https://nodejs-almacen.herokuapp.com/api/v1';
 
 @Injectable()
 export class AuthenticationService {

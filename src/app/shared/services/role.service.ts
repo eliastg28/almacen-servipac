@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-const USER_AUTH_API_URL = 'http://localhost:5000/api/v1';
+const USER_AUTH_API_URL = 'https://nodejs-almacen.herokuapp.com/api/v1';
 
 @Injectable({
   providedIn: 'root',
