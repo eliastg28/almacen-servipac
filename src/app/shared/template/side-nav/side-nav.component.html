@@ -5,7 +5,59 @@
             'ant-menu-dark' : isSideNavDark
         }"
     >
-        <li [ngClass]="item.submenu.length > 0?'ant-menu-submenu ant-menu-submenu-inline':'ant-menu-item'"
+    <!-- If user is admin permision to all views -->
+    <!-- If user is not admin permision only views Categoria, Proveedor, Almacén, Estantería and Producto -->
+    <!-- First Level -->
+    <li class="ant-menu-item" *ngIf="username == 'ADMIN'">
+        <a [routerLink]="['/page/rol']" (click)="closeMobileMenu()">
+            <i nz-icon nzType="idcard"></i>
+            <span>Rol</span>
+        </a>
+    </li>
+    <li class="ant-menu-item" *ngIf="username == 'ADMIN'">
+        <a [routerLink]="['/page/usuario']" (click)="closeMobileMenu()">
+            <i nz-icon nzType="user"></i>
+            <span>Usuario</span>
+        </a>
+    </li>
+    <li class="ant-menu-item">
+        <a [routerLink]="['/page/categoria']" (click)="closeMobileMenu()">
+            <i nz-icon nzType="appstore"></i>
+            <span>Categoria</span>
+        </a>
+    </li>
+    <li class="ant-menu-item">
+        <a [routerLink]="['/page/proveedor']" (click)="closeMobileMenu()">
+            <i nz-icon nzType="solution"></i>
+            <span>Proveedor</span>
+        </a>
+    </li>
+    <li class="ant-menu-item">
+        <a [routerLink]="['/page/almacen']" (click)="closeMobileMenu()">
+            <i nz-icon nzType="inbox"></i>
+            <span>Almacén</span>
+        </a>
+    </li>
+    <li class="ant-menu-item">
+        <a [routerLink]="['/page/estante']" (click)="closeMobileMenu()">
+            <i nz-icon nzType="hdd"></i>
+            <span>Estantería</span>
+        </a>
+    </li>
+    <li class="ant-menu-item">
+        <a [routerLink]="['/page/producto']" (click)="closeMobileMenu()">
+            <i nz-icon nzType="dropbox"></i>
+            <span>Producto</span>
+        </a>
+    </li>
+    <!-- <li class="ant-menu-item">
+        <a [routerLink]="['/page/transaccion']" (click)="closeMobileMenu()">
+            <i nz-icon nzType="transaction"></i>
+            <span>Transacción</span>
+        </a>
+    </li> -->
+
+        <!-- <li [ngClass]="item.submenu.length > 0?'ant-menu-submenu ant-menu-submenu-inline':'ant-menu-item'"
             *ngFor="let item of menuItems" 
             [routerLinkActive]="item.submenu.length > 0 ? 'ant-menu-submenu-open' : 'ant-menu-item-selected'"
             [routerLinkActiveOptions]="{exact: true}">
@@ -19,10 +71,10 @@
                 <i *ngIf="item.iconType == 'nzIcon'" nz-icon [nzType]="item.icon" [theme]="item.iconTheme"></i>
                 <i *ngIf="item.iconType == 'fontawesome'" class="m-r-10" [ngClass]="[item.iconTheme , item.icon]"></i>
                 <span>{{item.title}}</span>
-            </a>
+            </a> -->
 
             <!-- Second Level -->
-            <ul class="ant-menu ant-menu-inline ant-menu-sub dropdown-menu" *ngIf="item.submenu.length > 0">
+            <!-- <ul class="ant-menu ant-menu-inline ant-menu-sub dropdown-menu" *ngIf="item.submenu.length > 0">
                 <li [ngClass]="subItem.submenu.length > 0?'ant-menu-submenu ant-menu-submenu-inline':'ant-menu-item'" 
                     *ngFor="let subItem of item.submenu" 
                     [routerLinkActive]="subItem.submenu.length > 0 ? 'ant-menu-submenu-open' : 'ant-menu-item-selected'"
@@ -37,10 +89,10 @@
                         <i *ngIf="subItem.iconType == 'nzIcon'" nz-icon [nzType]="subItem.icon" [theme]="subItem.iconTheme"></i>
                         <i *ngIf="subItem.iconType == 'fontawesome'" class="m-r-10" [ngClass]="[subItem.iconTheme , subItem.icon]"></i>
                         <span>{{subItem.title}}</span>
-                    </a>
+                    </a> -->
 
                     <!-- Third Level -->
-                    <ul class="ant-menu ant-menu-inline ant-menu-sub dropdown-menu" *ngIf="subItem.submenu.length > 0">
+                    <!-- <ul class="ant-menu ant-menu-inline ant-menu-sub dropdown-menu" *ngIf="subItem.submenu.length > 0">
                         <li [ngClass]="subItem.submenu.length > 0?'ant-menu-submenu ant-menu-submenu-inline':'ant-menu-item'" 
                             *ngFor="let subItem of subItem.submenu" routerLinkActive="ant-menu-item-selected" 
                             [routerLinkActiveOptions]="{exact: true}">
@@ -58,7 +110,7 @@
                         </li>
                     </ul>
                 </li>
-            </ul>
-        </li>
+            </ul> -->
+        <!-- </li> -->
     </ul>
 </perfect-scrollbar>    

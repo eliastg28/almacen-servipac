@@ -24,6 +24,10 @@ export class HeaderComponent{
         this.router.navigateByUrl('/authentication/login-3');
     }
 
+    editProfile(): void {
+        this.router.navigateByUrl('/page/edit-profile');
+    }
+
     constructor( private themeService: ThemeConstantService, private authenticationService: AuthenticationService ,private router: Router) {}
 
     ngOnInit(): void {
