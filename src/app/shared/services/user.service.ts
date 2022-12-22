@@ -8,7 +8,7 @@ interface Rol {
   descripcion: string;
 }
 
-const USER_AUTH_API_URL = 'https://almacen-servipac.herokuapp.com';
+const USER_AUTH_API_URL = 'http://localhost:5000/api/v1';
 
 @Injectable({
   providedIn: 'root',
@@ -18,37 +18,45 @@ export class UserService {
 
   getUser() {
     return this.http.get(
-      `${USER_AUTH_API_URL}/users` /* , { headers: { Authorization: localStorage.getItem('token') } } */
+      `${USER_AUTH_API_URL}/user`
     );
   }
 
-  postUser(username: string, email: string, password: string, role: number) {
+  createUser(username: string, password: string, email: string, status:boolean, role: number){
     return this.http.post(
-      `${USER_AUTH_API_URL}/users/create`,
+      `${USER_AUTH_API_URL}/auth/register`,
       {
         username,
-        email,
         password,
-        role,
-      }
-       /* , { headers: { Authorization: localStorage.getItem('token') } } */
+        email,
+        status,
+        role
+      }/* , { headers: { 'x-access-token': localStorage.getItem('token') } } */
+    );
+  }
+
+
+  getUserById(id: string) {
+    return this.http.get(
+      `${USER_AUTH_API_URL}/user/${id}`
     );
   }
 
   deleteUser(id: number) {
     return this.http.delete(
-      `${USER_AUTH_API_URL}/users/delete/${id}` /* , { headers: { Authorization: localStorage.getItem('token') } } */
+      `${USER_AUTH_API_URL}/user/${id}`/* , { headers: { 'x-access-token': localStorage.getItem('token') } } */
     );
   }
 
-  editUser(id: number, username: string, email: string, role: number) {
+  editUser(id: number,username: string, email: string, status:boolean, role: number) {
     return this.http.put(
-      `${USER_AUTH_API_URL}/users/update/${id}`,
+      `${USER_AUTH_API_URL}/user/${id}`,
       {
         username,
         email,
-        role,
-      } /* , { headers: { Authorization: localStorage.getItem('token') } } */
+        status,
+        role
+      }/* , { headers: { 'x-access-token': localStorage.getItem('token') } } */
     );
   }
 }

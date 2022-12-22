@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-const USER_AUTH_API_URL = 'https://almacen-servipac.herokuapp.com';
+const USER_AUTH_API_URL = 'http://localhost:5000/api/v1';
 
 @Injectable({
   providedIn: 'root',
@@ -11,31 +11,33 @@ export class RoleService {
 
   getRol() {
     return this.http.get(
-      `${USER_AUTH_API_URL}/roles` /* , { headers: { Authorization: localStorage.getItem('token') } } */
+      `${USER_AUTH_API_URL}/role`
     );
   }
 
-  postRol(name: string) {
+  postRol(name: string, description: string) {
     return this.http.post(
-      `${USER_AUTH_API_URL}/roles/create`,
+        `${USER_AUTH_API_URL}/role`,
       {
         name,
-      } /* , { headers: { Authorization: localStorage.getItem('token') } } */
+        description
+      }/* , { headers: { 'x-access-token': localStorage.getItem('token') } } */
     );
   }
 
   deleteRol(id: number) {
     return this.http.delete(
-      `${USER_AUTH_API_URL}/roles/delete/${id}` /* , { headers: { Authorization: localStorage.getItem('token') } } */
+      `${USER_AUTH_API_URL}/role/${id}`/* , { headers: { 'x-access-token': localStorage.getItem('token') } } */
     );
   }
 
-  editRol(id: number, name: string) {
+  editRol(id: number, name: string, description: string) {
     return this.http.put(
-      `${USER_AUTH_API_URL}/roles/update/${id}`,
+      `${USER_AUTH_API_URL}/role/${id}`,
       {
         name,
-      } /* , { headers: { Authorization: localStorage.getItem('token') } } */
+        description
+      }/* , { headers: { 'x-access-token': localStorage.getItem('token') } } */
     );
   }
 }

@@ -6,41 +6,61 @@ import { map } from 'rxjs/operators';
 import { User } from '../interfaces/user.type';
 import { Router } from '@angular/router';
 
-const USER_AUTH_API_URL = 'https://almacen-servipac.herokuapp.com';
-
+const USER_AUTH_API_URL = 'http://localhost:5000/api/v1';
 
 @Injectable()
 export class AuthenticationService {
-    private currentUserSubject: BehaviorSubject<User>;
-    public currentUser: Observable<User>;
+  private currentUserSubject: BehaviorSubject<User>;
+  public currentUser: Observable<User>;
 
-    constructor(private http: HttpClient, private router: Router) {
-        this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUser')));
-        this.currentUser = this.currentUserSubject.asObservable();
-    }
+  constructor(private http: HttpClient, private router: Router) {
+    this.currentUserSubject = new BehaviorSubject<User>(
+      JSON.parse(localStorage.getItem('currentUser'))
+    );
+    this.currentUser = this.currentUserSubject.asObservable();
+  }
 
-    public get currentUserValue(): User {
-        return this.currentUserSubject.value;
-    }
+  public get currentUserValue(): User {
+    return this.currentUserSubject.value;
+  }
 
-    login(username: string, password: string) {
-        return this.http.post<any>(`${USER_AUTH_API_URL}/login`, { username, password })
-        .pipe(map(user => {
-            if (user && user.token) {
-                localStorage.setItem('currentUser', JSON.stringify(user));
-                localStorage.setItem('username', user.name);
-                localStorage.setItem('role', user.role);
-                this.currentUserSubject.next(user);
+  login(username: string, password: string) {
+    let listOfData;
+    return (
+      this.http
+        .post<any>(`${USER_AUTH_API_URL}/auth/login`, { username, password })
+        .pipe(
+          map((user) => {
+            for (const key in user) {
+              if (Object.prototype.hasOwnProperty.call(user, key)) {
+                const element = user[key];
+                if (typeof element === 'object') {
+                  listOfData = element;
+                }
+              }
+            }
+            console.log(listOfData);
+            console.log(listOfData.status);
+            if (listOfData && listOfData.token_access) {
+              localStorage.setItem('currentUser', JSON.stringify(listOfData));
+              localStorage.setItem('id', listOfData.id);
+              localStorage.setItem('username', listOfData.username);
+              localStorage.setItem('status', listOfData.status);
+              localStorage.setItem('role', listOfData.role.description);
+              this.currentUserSubject.next(listOfData);
             }
             return user;
-        }));
-    }
+          })
+        )
+    );
+  }
 
-    logout() {
-        localStorage.removeItem('currentUser');
-        localStorage.removeItem('username');
-        localStorage.removeItem('role');
-        this.currentUserSubject.next(null);
-        this.router.navigate(['/authentication/login-3']).then(() => true);
-    }
+  logout() {
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('username');
+    localStorage.removeItem('status');
+    localStorage.removeItem('role');
+    this.currentUserSubject.next(null);
+    this.router.navigate(['/authentication/login-3']).then(() => true);
+  }
 }
