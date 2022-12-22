@@ -1,0 +1,50 @@
+<div class="container">
+  <nz-card nzTitle="Información Básica">
+    <div class="media align-items-center">
+      <nz-avatar
+        [nzSize]="80"
+        nzIcon="user"
+        nzSrc="assets/images/avatars/thumb-10.jpg"
+      ></nz-avatar>
+      <div class="m-l-20 m-r-20">
+        <h5 class="m-b-5 font-size-18">{{ username }}</h5>
+      </div>
+    </div>
+    <hr class="m-v-25" />
+    <div class="row">
+      <div class="col-md-6">
+        <nz-form-item>
+          <nz-form-label>Email</nz-form-label>
+          <nz-form-control>
+            <span>{{ email }}</span>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div class="col-md-6">
+        <nz-form-item>
+          <nz-form-label>Estado</nz-form-label>
+          <nz-form-control>
+            <!-- si es verdadero escribir activo y pintarlo de verde sino inactivo de rojo -->
+            <span
+              [ngStyle]="{
+                color: status ? 'green' : 'red',
+                'text-transform': 'uppercase'
+              }"
+            >
+              {{ status == 'true' ? 'ACTIVO' : 'INACTIVO' }}
+            </span>
+            <!-- <span style="color: green">Activo</span> -->
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div class="col-md-6">
+        <nz-form-item>
+          <nz-form-label>Rol</nz-form-label>
+          <nz-form-control>
+            <span>{{ role }}</span>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+  </nz-card>
+</div>

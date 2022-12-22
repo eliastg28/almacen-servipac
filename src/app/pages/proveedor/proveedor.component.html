@@ -1,0 +1,218 @@
+<h3>Lista de Proveedores</h3>
+
+<button nz-button nzType="link" (click)="mostrarInput = true" class="m-b-20">
+  <i nz-icon nzType="plus"></i>Nuevo Proveedor
+</button>
+
+<form
+  class="ordenar"
+  *ngIf="mostrarInput"
+  nz-form
+  [nzLayout]="'inline'"
+  [formGroup]="validateForm"
+  (ngSubmit)="submitForm()"
+>
+  <nz-form-item>
+    <nz-form-label>RUC</nz-form-label>
+    <nz-form-control nzErrorTip="Por favor ingrese un RUC!">
+      <nz-input-group>
+        <input
+          formControlName="ruc"
+          nz-input
+          placeholder="Número de RUC"
+        />
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>Razón Social</nz-form-label>
+    <nz-form-control nzErrorTip="Por favor ingrese una razón social!">
+      <nz-input-group>
+        <input
+          formControlName="company_name"
+          nz-input
+          placeholder="Razón Social de proveedor"
+          oninput="this.value = this.value.toUpperCase()"
+        />
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>Dirección</nz-form-label>
+    <nz-form-control nzErrorTip="Por favor ingrese una dirección!">
+      <nz-input-group>
+        <input
+          formControlName="address"
+          nz-input
+          placeholder="Dirección de proveedor"
+          oninput="this.value = this.value.toUpperCase()"
+        />
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>Teléfono</nz-form-label>
+    <nz-form-control nzErrorTip="Por favor ingrese un teléfono!">
+      <nz-input-group nzPrefixIcon="phone">
+        <input
+          formControlName="phone"
+          nz-input
+          placeholder="Número de teléfono"
+        />
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>Correo</nz-form-label>
+    <nz-form-control nzErrorTip="Por favor ingrese un correo!">
+      <nz-input-group nzPrefixIcon="mail">
+        <input
+          formControlName="email"
+          nz-input
+          placeholder="Correo electrónico"
+          oninput="this.value = this.value.toLowerCase()"
+        />
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item class="w-100">
+    <nz-form-control>
+      <button
+        nz-button
+        nzType="primary"
+        nzDanger
+        (click)="mostrarInput = false; limpiarInput()"
+        class="btn-cancelar">
+        Cancelar
+      </button>
+      <button
+        type="button"
+        (click)="mostrarInput = false; addRow()"
+        nz-button
+        nzType="primary"
+        [disabled]="!validateForm.valid"
+      >
+        Agregar
+      </button>
+    </nz-form-control>
+  </nz-form-item>
+</form>
+
+<nz-table #dataTable nzBordered [nzData]="listOfData" class="w-100">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>RUC</th>
+      <th>Razón Social</th>
+      <th>Dirección</th>
+      <th>Teléfono</th>
+      <th>Correo</th>
+      <th>Acción</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let data of dataTable.data; let i = index">
+      <ng-container *ngIf="!editCache[data.id].edit; else editTemplate">
+        <td>{{ i + 1 }}</td>
+        <td>{{ data.ruc }}</td>
+        <td>{{ data.company_name }}</td>
+        <td>{{ data.address }}</td>
+        <td>{{ data.phone }}</td>
+        <td>{{ data.email }}</td>
+        
+        <td>
+            <button 
+            nz-button
+            nzType="link"
+            nzSize="small"
+            nzPrimary
+            (click)="startEdit(data.id)">Editar</button>
+          <button
+            nz-button
+            nzType="link"
+            nzSize="small"
+            nzDanger
+            nz-popconfirm
+            nzPopconfirmTitle="Seguro de eliminar?"
+            (nzOnConfirm)="deleteRow(data.id)"
+          >
+            Eliminar
+          </button>
+        </td>
+      </ng-container>
+      <ng-template #editTemplate>
+        <td>
+          {{ i + 1}}
+        </td>
+        <td>
+          <input
+            type="text"
+            nz-input
+            [(ngModel)]="editCache[data.id].data.ruc"
+            oninput="this.value = this.value.toUpperCase()"
+          />
+        </td>
+        <td>
+          <input
+            type="text"
+            nz-input
+            [(ngModel)]="editCache[data.id].data.company_name"
+            oninput="this.value = this.value.toUpperCase()"
+          />
+        </td>
+        <td>
+          <input
+            type="text"
+            nz-input
+            [(ngModel)]="editCache[data.id].data.address"
+            oninput="this.value = this.value.toUpperCase()"
+          />
+        </td>
+        <td>
+          <input
+            type="text"
+            nz-input
+            [(ngModel)]="editCache[data.id].data.phone"
+          />
+        </td>
+        <td>
+          <input
+            type="text"
+            nz-input
+            [(ngModel)]="editCache[data.id].data.email"
+            oninput="this.value = this.value.toLowerCase()"
+          />
+        </td>
+        <!-- <td>
+          <input
+            type="text"
+            nz-input
+            [(ngModel)]="editCache[data.id].data.role"
+            oninput="this.value = this.value.toLowerCase()"
+          />
+        </td> -->
+
+        <td>
+          <button 
+          nz-button
+          nzType="link"
+          nzSize="small"
+          nzPrimary
+          (click)="saveEdit(data.id)" class="save">Guardar</button><br>
+          <button
+            nz-button
+            nzType="link"
+            nzSize="small"
+            nzDanger
+            (click)="cancelEdit(data.id)"
+            >Cancelar</button>
+        </td>
+      </ng-template>
+    </tr>
+  </tbody>
+</nz-table>

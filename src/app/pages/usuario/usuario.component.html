@@ -1,0 +1,243 @@
+<h3>Lista de Usuarios</h3>
+
+<button nz-button nzType="link" (click)="mostrarInput = true" class="m-b-20">
+  <i nz-icon nzType="plus"></i>Nuevo Usuario
+</button>
+
+<form
+  class="ordenar"
+  *ngIf="mostrarInput"
+  nz-form
+  [nzLayout]="'inline'"
+  [formGroup]="validateForm"
+  (ngSubmit)="submitForm()"
+>
+  <nz-form-item>
+    <nz-form-label>Nombre</nz-form-label>
+    <nz-form-control nzErrorTip="Por favor ingrese un usuario!">
+      <nz-input-group nzPrefixIcon="user">
+        <input
+          formControlName="username"
+          nz-input
+          placeholder="Nombre de usuario"
+          oninput="this.value = this.value.toUpperCase()"
+        />
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>Contraseña</nz-form-label>
+    <nz-form-control nzErrorTip="Por favor ingrese una contraseña!">
+      <nz-input-group nzPrefixIcon="lock">
+        <input
+          formControlName="password"
+          nz-input
+          placeholder="Contraseña"
+          oninput="this.value = this.value.toLowerCase()"
+        />
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+ 
+  <nz-form-item>
+    <nz-form-label>Correo</nz-form-label>
+    <nz-form-control nzErrorTip="Por favor ingrese un correo!">
+      <nz-input-group nzPrefixIcon="mail">
+        <input
+          formControlName="email"
+          nz-input
+          placeholder="Correo electrónico"
+          oninput="this.value = this.value.toLowerCase()"
+        />
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+
+
+  <nz-form-item>
+    <nz-form-label>Estado</nz-form-label>
+    <nz-form-control nzErrorTip="Por favor seleccione un estado!">
+      <nz-input-group>
+        <nz-select
+          formControlName="status"
+          nzPlaceHolder="Seleccione un estado de usuario"
+          nzAllowClear
+        >
+        <nz-option *ngFor="let st of listOfStatus" nzLabel="{{st.name}}" nzValue="{{st.state}}">
+        </nz-option>
+        </nz-select>
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>Rol</nz-form-label>
+    <nz-form-control nzErrorTip="Por favor seleccione un rol!">
+      <nz-input-group>
+        <nz-select
+          formControlName="role"
+          nzPlaceHolder="Seleccione un rol de usuario"
+          nzAllowClear
+        >
+        <nz-option *ngFor="let rol of listOfRoles" nzLabel="{{rol.name}}" nzValue="{{rol.id}}">
+        </nz-option>
+        </nz-select>
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item class="w-100">
+    <nz-form-control>
+      <button
+        nz-button
+        nzType="primary"
+        nzDanger
+        (click)="mostrarInput = false; limpiarInput()"
+        class="btn-cancelar">
+        Cancelar
+      </button>
+      <button
+        type="button"
+        (click)="mostrarInput = false; addRow()"
+        nz-button
+        nzType="primary"
+        [disabled]="!validateForm.valid"
+      >
+        Agregar
+      </button>
+    </nz-form-control>
+  </nz-form-item>
+</form>
+
+<nz-table #dataTable nzBordered [nzData]="listOfData" class="w-100">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Nombre de usuario</th>
+      <!-- <th>Contraseña</th> -->
+      <th>Correo</th>
+      <th>Estado</th>
+      <th>Descripción de rol</th>
+      <th>Acción</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let data of dataTable.data; let i = index">
+      <ng-container *ngIf="!editCache[data.id].edit; else editTemplate">
+        <td>{{ i + 1 }}</td>
+        <td>{{ data.username }}</td>
+        <td>{{ data.email }}</td>
+        <!-- si data.status es true pintar de verde y en mayuscula sino de rojo en mayuscula -->
+        <td
+          [ngStyle]="{
+            color: data.status.state ? 'green' : 'red',
+            'text-transform': 'uppercase'
+          }"
+        >
+          {{ data.status.state ? 'ACTIVO' : 'INACTIVO' }}
+        </td>
+        <!-- <td>{{ data.status }}</td>            -->
+        <td>{{ data.role.description }}</td>                 
+        
+        <td>
+            <button 
+            nz-button
+            nzType="link"
+            nzSize="small"
+            nzPrimary
+            (click)="startEdit(data.id)">Editar</button>
+          <button
+            nz-button
+            nzType="link"
+            nzSize="small"
+            nzDanger
+            nz-popconfirm
+            nzPopconfirmTitle="Seguro de eliminar?"
+            (nzOnConfirm)="deleteRow(data.id)"
+          >
+            Eliminar
+          </button>
+        </td>
+      </ng-container>
+      <ng-template #editTemplate>
+        <td>
+          {{ i + 1}}
+        </td>
+        <td>
+          <input
+            type="text"
+            nz-input
+            [(ngModel)]="editCache[data.id].data.username"
+            oninput="this.value = this.value.toUpperCase()"
+          />
+        </td>
+        <td>
+          <input
+            type="text"
+            nz-input
+            [(ngModel)]="editCache[data.id].data.email"
+            oninput="this.value = this.value.toLowerCase()"
+          />
+        </td>
+        
+        
+        <!-- <td>
+          <input
+            type="text"
+            nz-input
+            [(ngModel)]="editCache[data.id].data.role"
+            oninput="this.value = this.value.toLowerCase()"
+          />
+        </td> -->
+
+        <!-- <td>
+          <nz-select [(ngModel)]="editCache[data.id].data.status">
+            <nz-option [nzValue]="status" [nzLabel]="status" >
+        
+            </nz-option>
+          </nz-select>
+        </td> -->
+
+        <td>
+          <nz-select [(ngModel)]="editCache[data.id].data.status.state">
+            <nz-option *ngFor="let st of listOfStatus" [nzValue]="st.state" [nzLabel]="st.name">
+            </nz-option>            
+          </nz-select>
+        </td>
+
+        <td>
+          <nz-select [(ngModel)]="editCache[data.id].data.role.id">
+            <nz-option *ngFor="let rol of listOfRoles" [nzValue]="rol.id" [nzLabel]="rol.description" >
+            </nz-option>
+          </nz-select>
+        </td>
+
+        <!-- <td>
+          <select name="" id="" class="combo">
+            <option *ngFor="let rol of listOfRoles" [ngValue]="rol.description" [selected]="rol.description==editCache[data.id].data.role.description" >
+              {{rol.description}}
+            </option>
+          </select>
+        </td> -->
+
+
+        <td>
+          <button 
+          nz-button
+          nzType="link"
+          nzSize="small"
+          nzPrimary
+          (click)="saveEdit(data.id)" class="save">Guardar</button><br>
+          <button
+            nz-button
+            nzType="link"
+            nzSize="small"
+            nzDanger
+            (click)="cancelEdit(data.id)"
+            >Cancelar</button>
+        </td>
+      </ng-template>
+    </tr>
+  </tbody>
+</nz-table>

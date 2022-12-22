@@ -46,7 +46,7 @@ const antdModule= [
         SignUp3Component,
         Error1Component,
         Error2Component,
-        ResetPasswordComponent,
+        ResetPasswordComponent
     ]
 })
 

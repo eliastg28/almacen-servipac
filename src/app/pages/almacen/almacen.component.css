@@ -1,0 +1,30 @@
+.anticon-delete {
+    color: red;
+  }
+  .anticon {
+    margin-right: 8px;
+  }
+  
+  form {
+    margin-bottom: 20px;
+  }
+  
+  .btn-cancelar {
+    margin-right: 10px;
+  }
+  
+  .btn-agregar {
+    margin-right: 10px;
+  }
+  
+  nz-input-group {
+    margin-right: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .form {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  

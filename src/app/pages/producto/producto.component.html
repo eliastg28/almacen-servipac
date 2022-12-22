@@ -1,0 +1,291 @@
+<h3>Lista de Productos</h3>
+
+<button nz-button nzType="link" (click)="mostrarInput = true" class="m-b-20">
+  <i nz-icon nzType="plus"></i>Nuevo Producto
+</button>
+
+<form
+  class="ordenar"
+  *ngIf="mostrarInput"
+  nz-form
+  [nzLayout]="'inline'"
+  [formGroup]="validateForm"
+  (ngSubmit)="submitForm()"
+>
+  <nz-form-item>
+    <nz-form-label>Nombre</nz-form-label>
+    <nz-form-control nzErrorTip="Por favor ingrese un producto">
+      <nz-input-group nzPrefixIcon="dropbox">
+        <input
+          formControlName="name"
+          nz-input
+          placeholder="Nombre de producto"
+          oninput="this.value = this.value.toUpperCase()"
+        />
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>Proveedor</nz-form-label>
+    <nz-form-control nzErrorTip="Por favor seleccione un proveedor!">
+      <nz-input-group>
+        <nz-select
+          formControlName="supplier"
+          nzPlaceHolder="Seleccione un proveedor"
+          nzAllowClear
+        >
+        <nz-option *ngFor="let supplier of listOfSupplier" nzLabel="{{supplier.company_name}}" nzValue="{{supplier.id}}">
+        </nz-option>
+        </nz-select>
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+  
+  <nz-form-item>
+    <nz-form-label>Categoria</nz-form-label>
+    <nz-form-control nzErrorTip="Por favor seleccione una categoría!">
+      <nz-input-group>
+        <nz-select
+          formControlName="category"
+          nzPlaceHolder="Seleccione una categoría"
+          nzAllowClear
+        >
+        <nz-option *ngFor="let category of listOfCategory" nzLabel="{{category.name}}" nzValue="{{category.id}}">
+        </nz-option>
+        </nz-select>
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>Stock</nz-form-label>
+    <nz-form-control nzErrorTip="Por favor ingrese un stock">
+      <nz-input-group>
+        <input
+          formControlName="stock"
+          nz-input
+          placeholder="Stock del producto"
+        />
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+  
+  <nz-form-item>
+    <nz-form-label>Almacén</nz-form-label>
+    <nz-form-control nzErrorTip="Por favor seleccione un almacén!">
+      <nz-input-group>
+        <nz-select
+          formControlName="warehouse"
+          nzPlaceHolder="Seleccione un almacén"
+          nzAllowClear
+          (ngModelChange)="getRackAndLevel($event)"
+        >
+        <nz-option *ngFor="let warehouse of listOfWarehouse" nzLabel="{{warehouse.name}}" nzValue="{{warehouse.id}}">
+        </nz-option>
+        </nz-select>
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>Estante</nz-form-label>
+    <nz-form-control nzErrorTip="Por favor seleccione un estante!">
+      <nz-input-group>
+        <nz-select
+          formControlName="rack"
+          nzPlaceHolder="Seleccione un estante"
+          nzAllowClear
+          (ngModelChange)="compareLevel($event)"
+        >
+        <nz-option *ngFor="let rack of listOfRack" nzLabel="{{rack.name}}" nzValue="{{rack.id}}">
+        </nz-option>
+        </nz-select>
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>Nivel</nz-form-label>
+    <nz-form-control nzErrorTip="Por favor seleccione un estante!">
+      <nz-input-group>
+        <nz-select
+          formControlName="level"
+          nzPlaceHolder="Seleccione un estante"
+          nzAllowClear
+        >
+        <nz-option *ngFor="let rack of listOfRack" nzLabel="{{rack.levels}}" nzValue="{{rack.levels}}">
+        </nz-option>
+        </nz-select>
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+
+  <!-- <nz-form-item>
+    <nz-form-label>Nombre</nz-form-label>
+    <nz-form-control nzErrorTip="Por favor ingrese un producto">
+      <nz-input-group nzPrefixIcon="dropbox">
+        <input
+          formControlName="name"
+          nz-input
+          placeholder="Nombre de producto"
+          oninput="this.value = this.value.toUpperCase()"
+        />
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item> -->
+
+  <nz-form-item class="w-100">
+    <nz-form-control>
+      <button
+        nz-button
+        nzType="primary"
+        nzDanger
+        (click)="mostrarInput = false; limpiarInput()"
+        class="btn-cancelar">
+        Cancelar
+      </button>
+      <button
+        type="button"
+        (click)="mostrarInput = false; addRow()"
+        nz-button
+        nzType="primary"
+        [disabled]="!validateForm.valid"
+      >
+        Agregar
+      </button>
+    </nz-form-control>
+  </nz-form-item>
+</form>
+
+<nz-table #dataTable nzBordered [nzData]="listOfData" class="w-100">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Nombre</th>
+      <th>Proveedor</th>
+      <th>Categoría</th>
+      <th>Stock</th>
+      <th>Almacén</th>
+      <th>Estante</th>
+      <th>Nivel</th>
+      <th>Acción</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let data of dataTable.data; let i = index">
+      <ng-container *ngIf="!editCache[data.id].edit; else editTemplate">
+        <td>{{ i + 1 }}</td>
+        <td>{{ data.name }}</td>
+        <td>{{ data.supplier.company_name }}</td>
+        <td>{{ data.category.name }}</td>           
+        <td>{{ data.stock }}</td>           
+        <td>{{ data.warehouse.name }}</td>           
+        <td>{{ data.rack.name }}</td>           
+        <td>{{ data.level }}</td>           
+        
+        <td>
+            <button 
+            nz-button
+            nzType="link"
+            nzSize="small"
+            nzPrimary
+            (click)="startEdit(data.id)">Editar</button>
+          <button
+            nz-button
+            nzType="link"
+            nzSize="small"
+            nzDanger
+            nz-popconfirm
+            nzPopconfirmTitle="Seguro de eliminar?"
+            (nzOnConfirm)="deleteRow(data.id)"
+          >
+            Eliminar
+          </button>
+        </td>
+      </ng-container>
+      <ng-template #editTemplate>
+        <td>
+          {{ i + 1}}
+        </td>
+        <td>
+          <input
+            type="text"
+            nz-input
+            [(ngModel)]="editCache[data.id].data.name"
+            oninput="this.value = this.value.toUpperCase()"
+          />
+        </td>
+
+        <td>
+          <nz-select nzAllowClear [(ngModel)]="editCache[data.id].data.supplier.id">
+            <nz-option *ngFor="let supplier of listOfSupplier" [nzValue]="supplier.id" [nzLabel]="supplier.company_name" >
+            </nz-option>
+          </nz-select>
+        </td>
+        
+        <td>
+          <nz-select nzAllowClear [(ngModel)]="editCache[data.id].data.category.id">
+            <nz-option *ngFor="let category of listOfCategory" [nzValue]="category.id" [nzLabel]="category.name" >
+            </nz-option>
+          </nz-select>
+        </td>
+        
+        <td>
+          <input
+            type="text"
+            nz-input
+            [(ngModel)]="editCache[data.id].data.stock"
+            oninput="this.value = this.value.toUpperCase()"
+          />
+        </td>
+
+        <td>
+          <nz-select nzAllowClear [(ngModel)]="editCache[data.id].data.warehouse.id">
+            <nz-option *ngFor="let warehouse of listOfWarehouse" [nzValue]="warehouse.id" [nzLabel]="warehouse.name" >
+            </nz-option>
+          </nz-select>
+        </td>
+        
+        <td>
+          <nz-select nzAllowClear [(ngModel)]="editCache[data.id].data.rack.id">
+            <nz-option *ngFor="let rack of listOfRack" [nzValue]="rack.id" [nzLabel]="rack.name" >
+            </nz-option>
+          </nz-select>
+        </td>
+        
+        <td>
+          <nz-select nzAllowClear [(ngModel)]="editCache[data.id].data.level">
+            <nz-option *ngFor="let level of listOfLevel" [nzValue]="level" [nzLabel]="level">
+            </nz-option>
+          </nz-select>
+        </td>
+
+        <!-- <td>
+          <input
+            type="text"
+            nz-input
+            [(ngModel)]="editCache[data.id].data.stock"
+            oninput="this.value = this.value.toUpperCase()"
+          />
+        </td> -->
+
+        <td>
+          <button 
+          nz-button
+          nzType="link"
+          nzSize="small"
+          nzPrimary
+          (click)="saveEdit(data.id)" class="save">Guardar</button><br>
+          <button
+            nz-button
+            nzType="link"
+            nzSize="small"
+            nzDanger
+            (click)="cancelEdit(data.id)"
+            >Cancelar</button>
+        </td>
+      </ng-template>
+    </tr>
+  </tbody>
+</nz-table>
